@@ -61,6 +61,7 @@ public class TouchDrawActivity extends Activity {
     private String mTempFilePath = "";
     private Bitmap.CompressFormat mEncodingType = Bitmap.CompressFormat.PNG;
     private int a, r, g, b; //Decoded ARGB color values for the background and erasing
+    private boolean mFinished = false;
 
     // Labels and values for stroke colour and width selection buttons
     private static final String[] STROKE_COLOUR_LABELS = {"RED", "BLUE", "GREEN", "BLACK"};
@@ -386,6 +387,8 @@ public class TouchDrawActivity extends Activity {
             System.gc();
         }
 
+        mFinished = true;
+
         super.finish();
     }
 
@@ -454,6 +457,10 @@ public class TouchDrawActivity extends Activity {
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
 
+            if (mFinished) {
+              return;
+            }
+
             float newWidth = w;
             float newHeight = h;
 
@@ -481,6 +488,10 @@ public class TouchDrawActivity extends Activity {
 
         @Override
         protected void onDraw(Canvas canvas) {
+            if (mFinished) {
+              return;
+            }
+
             canvas.drawColor(Color.argb(a, r, g, b));
             canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mPath, mPaint);
